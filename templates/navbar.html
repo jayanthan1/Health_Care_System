@@ -1,0 +1,43 @@
+<div class="sidebar">
+    <div class="sidebar-header mb-4">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Health Pathway" class="logo">
+        <h3>Health Pathway</h3>
+    </div>
+    
+    <nav class="nav-menu">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a href="{{ url_for('dashboard') }}" 
+                   class="nav-link {{ 'active' if request.endpoint == 'dashboard' }}">
+                    <i class="bx bx-home me-2"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('health_records') }}" 
+                   class="nav-link {{ 'active' if request.endpoint == 'health_records' }}">
+                    <i class="bx bx-file me-2"></i>
+                    <span>Health Records</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('profile_settings') }}" 
+                   class="nav-link {{ 'active' if request.endpoint == 'profile_settings' }}">
+                    <i class="bx bx-user me-2"></i>
+                    <span>Profile Settings</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+        <div class="user-info mb-3">
+            <img src="{{ url_for('static', filename='images/default-avatar.png') }}" alt="User Avatar" class="avatar">
+            <span class="user-name">{{ user.name }}</span>
+        </div>
+        <a href="{{ url_for('logout') }}" class="nav-link logout-link">
+            <i class="bx bx-log-out me-2"></i>
+            <span>Logout</span>
+        </a>
+    </div>
+</div>

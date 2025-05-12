@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Records | Health Pathway</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2B3467;
+            --secondary-color: #3E54AC;
+            --accent-color: #4E67E4;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --light-bg: #F5F7FF;
+            --sidebar-width: 250px;
+        }
+
+        body {
+            background: var(--light-bg);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            background: var(--primary-color);
+            padding: 20px;
+            color: white;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar .nav-link {
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin: 5px 0;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .sidebar .nav-link.active {
+            background: var(--accent-color);
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .health-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .health-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .record-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .record-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent-color);
+            opacity: 0.7;
+        }
+
+        .record-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .record-type-icon {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .record-card:hover .record-type-icon {
+            transform: scale(1.1);
+        }
+
+        .record-tag {
+            font-size: 0.8rem;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            background: rgba(78, 103, 228, 0.1);
+            color: var(--accent-color);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .record-tag:hover {
+            background: rgba(78, 103, 228, 0.2);
+        }
+
+        .upload-zone {
+            border: 2px dashed var(--accent-color);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            background: rgba(78, 103, 228, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-bottom: 2rem;
+        }
+
+        .upload-zone:hover {
+            background: rgba(78, 103, 228, 0.1);
+            transform: scale(1.02);
+        }
+
+        .upload-zone i {
+            font-size: 3rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+
+        .filter-btn {
+            border: none;
+            background: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            margin: 0 0.3rem;
+            transition: all 0.3s ease;
+            color: #666;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-btn.active {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .search-box {
+            position: relative;
+            max-width: 300px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+
+        .search-box input {
+            padding: 0.8rem 1rem 0.8rem 2.5rem;
+            border-radius: 25px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent-color);
+        }
+
+        .record-actions {
+            opacity: 0;
+            transition: all 0.3s ease;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+        }
+
+        .record-card:hover .record-actions {
+            opacity: 1;
+        }
+
+        .action-btn {
+            padding: 0.5rem;
+            border-radius: 50%;
+            border: none;
+            background: rgba(0, 0, 0, 0.05);
+            color: #666;
+            transition: all 0.3s ease;
+            margin-left: 0.5rem;
+        }
+
+        .action-btn:hover {
+            background: var(--accent-color);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .action-btn.delete:hover {
+            background: var(--danger-color);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .empty-state img {
+            width: 200px;
+            margin-bottom: 2rem;
+            opacity: 0.7;
+        }
+
+        .empty-state h4 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state p {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .upload-progress {
+            height: 4px;
+            margin-top: 1rem;
+            border-radius: 2px;
+            background: rgba(78, 103, 228, 0.1);
+            overflow: hidden;
+        }
+
+        .upload-progress-bar {
+            height: 100%;
+            background: var(--accent-color);
+            width: 0;
+            transition: width 0.3s ease;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .record-card.new {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h3 class="mb-4">Health Pathway</h3>
+        <nav class="mt-4">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a href="{{ url_for('dashboard') }}" class="nav-link text-white">
+                        <i class="bx bxs-dashboard me-2"></i>Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('health_history') }}" class="nav-link text-white">
+                        <i class="bx bx-history me-2"></i>Health History
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('health_records') }}" class="nav-link text-white active">
+                        <i class="bx bx-file me-2"></i>Health Records
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('profile_settings') }}" class="nav-link">
+                        <i class="bx bx-user"></i>Profile Settings
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('complete_profile') }}" class="nav-link">
+                        <i class="bx bx-user-circle"></i>Complete Health Profile
+                    </a>
+                </li>
+                <li class="nav-item mt-auto">
+                    <a href="{{ url_for('logout') }}" class="nav-link">
+                        <i class="bx bx-log-out"></i>Logout
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container-fluid">
+            <h2 class="mb-4">Health Records</h2>
+            
+            <!-- Upload Section -->
+            <div class="health-card">
+                <h4 class="mb-4">Upload Medical Reports</h4>
+                <div class="upload-section">
+                    <form id="pdfUploadForm" enctype="multipart/form-data">
+                        <input type="file" class="form-control mb-3" accept=".pdf" name="file" required>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bx bx-upload me-2"></i>Upload & Analyze
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Records Display -->
+            <div class="row">
+                {% for record in records %}
+                <div class="col-md-6 mb-4">
+                    <div class="health-card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0">{{ record.file_name }}</h5>
+                            {% if record.is_new %}
+                            <span class="badge bg-success">New</span>
+                            {% endif %}
+                        </div>
+                        <p class="text-muted mb-3">
+                            <i class="bx bx-calendar me-2"></i>
+                            {{ record.upload_date.strftime('%B %d, %Y') }}
+                        </p>
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-outline-primary btn-sm">
+                                <i class="bx bx-show me-1"></i>View
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm">
+                                <i class="bx bx-trash me-1"></i>Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Add your custom JavaScript here -->
+</body>
+</html>

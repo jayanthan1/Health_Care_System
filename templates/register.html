@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Health Pathway</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #2B3467;
+            --secondary-color: #3E54AC;
+            --accent-color: #4E67E4;
+            --background-color: #F5F7FF;
+            --text-color: #2C3333;
+            --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding: 40px 0;
+            line-height: 1.6;
+        }
+
+        .register-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            overflow: hidden;
+            display: flex;
+        }
+
+        .register-sidebar {
+            background: var(--primary-color);
+            color: white;
+            padding: 40px;
+            width: 300px;
+        }
+
+        .register-main {
+            flex: 1;
+            padding: 40px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .progress-steps {
+            list-style: none;
+            padding: 0;
+            margin: 40px 0;
+        }
+
+        .progress-step {
+            margin-bottom: 20px;
+            padding-left: 30px;
+            position: relative;
+            opacity: 0.6;
+        }
+
+        .progress-step.active {
+            opacity: 1;
+            color: #4E67E4;
+        }
+
+        .progress-step::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid currentColor;
+        }
+
+        .form-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-color);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 15px;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #E8ECF4;
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(78, 103, 228, 0.1);
+        }
+
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-color);
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-primary {
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            background: transparent;
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .help-text {
+            font-size: 0.85rem;
+            color: #6B7280;
+            margin-top: 5px;
+        }
+
+        .alert {
+            border-radius: 10px;
+            border: none;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        /* Custom Input Styling */
+        .custom-radio {
+            display: flex;
+            gap: 15px;
+            margin: 10px 0;
+        }
+
+        .radio-card {
+            flex: 1;
+            border: 2px solid #E8ECF4;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .radio-card:hover {
+            border-color: var(--accent-color);
+        }
+
+        .radio-card.selected {
+            border-color: var(--accent-color);
+            background: rgba(78, 103, 228, 0.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <!-- Sidebar with Progress -->
+        <div class="register-sidebar">
+            <h3>Health Pathway</h3>
+            <p class="text-light mb-4">Complete your health profile</p>
+            
+            <ul class="progress-steps">
+                <li class="progress-step active" data-step="1">Personal Information</li>
+                <li class="progress-step" data-step="2">Physical Measurements</li>
+                <li class="progress-step" data-step="3">Health Indicators</li>
+                <li class="progress-step" data-step="4">Lifestyle Factors</li>
+                <li class="progress-step" data-step="5">Medical History</li>
+            </ul>
+        </div>
+
+        <!-- Main Form Area -->
+        <div class="register-main">
+            <form id="registrationForm" action="{{ url_for('register') }}" method="POST">
+                <!-- Personal Information Section -->
+                <div class="form-section active" data-step="1">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="bi bi-person"></i>
+                        </div>
+                        <h4>Personal Information</h4>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-control" name="email" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-control" name="password" required>
+                            <div class="help-text">Must be at least 8 characters long</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Age</label>
+                            <input type="number" class="form-control" name="age" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Gender</label>
+                            <div class="custom-radio">
+                                <div class="radio-card">
+                                    <input type="radio" name="gender" value="male" required>
+                                    <label>Male</label>
+                                </div>
+                                <div class="radio-card">
+                                    <input type="radio" name="gender" value="female">
+                                    <label>Female</label>
+                                </div>
+                                <div class="radio-card">
+                                    <input type="radio" name="gender" value="other">
+                                    <label>Other</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Physical Measurements Section -->
+                <div class="form-section" data-step="2">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="bi bi-rulers"></i>
+                        </div>
+                        <h4>Physical Measurements</h4>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Height (cm)</label>
+                            <input type="number" class="form-control" name="height" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Weight (kg)</label>
+                            <input type="number" class="form-control" name="weight" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Blood Pressure</label>
+                            <input type="text" class="form-control" name="blood_pressure" placeholder="120/80" required>
+                            <div class="help-text">Format: Systolic/Diastolic</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Health Indicators Section -->
+                <div class="form-section" data-step="3">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="bi bi-heart-pulse"></i>
+                        </div>
+                        <h4>Health Indicators</h4>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Glucose Level (mg/dL)</label>
+                            <input type="number" class="form-control" name="glucose_level" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Cholesterol (mg/dL)</label>
+                            <input type="number" class="form-control" name="cholesterol" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Heart Rate (bpm)</label>
+                            <input type="number" class="form-control" name="heart_rate" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lifestyle Factors Section -->
+                <div class="form-section" data-step="4">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="bi bi-activity"></i>
+                        </div>
+                        <h4>Lifestyle Factors</h4>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Smoking Status</label>
+                            <select class="form-select" name="smoking_status" required>
+                                <option value="0">Non-smoker</option>
+                                <option value="1">Current Smoker</option>
+                                <option value="2">Former Smoker</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Alcohol Consumption</label>
+                            <select class="form-select" name="alcohol_consumption" required>
+                                <option value="0">None</option>
+                                <option value="1">Occasional</option>
+                                <option value="2">Regular</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Physical Activity (hrs/week)</label>
+                            <input type="number" class="form-control" name="physical_activity" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Sleep Hours</label>
+                            <input type="number" step="0.5" class="form-control" name="sleep_hours" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Stress Level (1-10)</label>
+                            <input type="range" class="form-range" min="1" max="10" name="stress_level" required>
+                            <div id="stressValue" class="text-center">5</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Medical History Section -->
+                <div class="form-section" data-step="5">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="bi bi-clipboard2-pulse"></i>
+                        </div>
+                        <h4>Medical History</h4>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label">Existing Medical Conditions</label>
+                            <textarea class="form-control" name="existing_conditions" rows="2"></textarea>
+                            <div class="help-text">List any diagnosed conditions</div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Family Medical History</label>
+                            <textarea class="form-control" name="family_history" rows="2"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Current Medications</label>
+                            <textarea class="form-control" name="medications" rows="2"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="navigation-buttons">
+                    <button type="button" class="btn btn-outline-primary" id="prevBtn" style="display: none;">Previous</button>
+                    <button type="button" class="btn btn-primary" id="nextBtn">Next</button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn" style="display: none;">Complete Registration</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 5;
+
+        function showStep(step) {
+            document.querySelectorAll('.form-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelector(`.form-section[data-step="${step}"]`).classList.add('active');
+            
+            document.querySelectorAll('.progress-step').forEach(step => {
+                step.classList.remove('active');
+            });
+            document.querySelector(`.progress-step[data-step="${currentStep}"]`).classList.add('active');
+
+            // Update buttons
+            document.getElementById('prevBtn').style.display = step === 1 ? 'none' : 'block';
+            document.getElementById('nextBtn').style.display = step === totalSteps ? 'none' : 'block';
+            document.getElementById('submitBtn').style.display = step === totalSteps ? 'block' : 'none';
+        }
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                showStep(currentStep);
+            }
+        });
+
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        });
+
+        // Update stress level value display
+        document.querySelector('input[name="stress_level"]').addEventListener('input', (e) => {
+            document.getElementById('stressValue').textContent = e.target.value;
+        });
+
+        // Radio card selection
+        document.querySelectorAll('.radio-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.radio-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                card.querySelector('input[type="radio"]').checked = true;
+            });
+        });
+
+        // Form validation
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            const bp = document.querySelector('input[name="blood_pressure"]').value;
+            if (!bp.match(/^\d{2,3}\/\d{2,3}$/)) {
+                e.preventDefault();
+                alert('Please enter blood pressure in the format "120/80"');
+            }
+        }); 
+    </script>
+</body>
+</html>

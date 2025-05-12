@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health History | Health Pathway</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Copy existing styles from dashboard.html */
+        .health-timeline {
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .timeline-entry {
+            padding: 15px;
+            border-left: 3px solid var(--accent-color);
+            margin-bottom: 15px;
+            position: relative;
+            background: rgba(78, 103, 228, 0.05);
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .timeline-date {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .metric-change {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-left: 5px;
+        }
+        
+        .metric-improved {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .metric-declined {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .progress-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .progress-card {
+            background: rgba(78, 103, 228, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .progress-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .progress {
+            height: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .metric-comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .comparison-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .comparison-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+
+        .trend-indicator {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+        }
+
+        .trend-up {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .trend-down {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <!-- Add consistent sidebar navigation -->
+    <div class="sidebar">
+        <h3 class="mb-4">Health Pathway</h3>
+        <nav class="mt-4">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a href="{{ url_for('dashboard') }}" class="nav-link text-white">
+                        <i class="bx bxs-dashboard me-2"></i>Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('health_history') }}" class="nav-link text-white active">
+                        <i class="bx bx-history me-2"></i>Health History
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('health_records') }}" class="nav-link text-white">
+                        <i class="bx bx-file me-2"></i>Health Records
+                    </a>
+                </li>
+                <!-- ... other navigation items ... -->
+            </ul>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="container-fluid">
+            <h2 class="mb-4">Health History</h2>
+            
+            <!-- Progress Overview Section -->
+            <div class="progress-section animate__animated animate__fadeIn">
+                <h4 class="mb-4">Progress Overview</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="progress-card">
+                            <div class="progress-title">Overall Health Score</div>
+                            <div class="progress">
+                                <div class="progress-bar bg-success" 
+                                     role="progressbar" 
+                                     style="width: {{ overall_progress }}%" 
+                                     aria-valuenow="{{ overall_progress }}" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                    {{ overall_progress }}%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="progress-card">
+                            <div class="progress-title">Health Improvement</div>
+                            <canvas id="improvementChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Metric Comparisons -->
+                <div class="metric-comparison">
+                    {% for metric in metrics_comparison %}
+                    <div class="comparison-card">
+                        <div class="metric-label">{{ metric.label }}</div>
+                        <div class="comparison-value">{{ metric.current_value }}</div>
+                        <div class="trend-indicator {{ 'trend-up' if metric.improvement else 'trend-down' }}">
+                            <i class="bx {{ 'bx-trending-up' if metric.improvement else 'bx-trending-down' }} me-1"></i>
+                            {{ metric.change }}%
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Health History Timeline -->
+            <div class="health-timeline animate__animated animate__fadeIn">
+                <h4 class="mb-4">Health Timeline</h4>
+                {% for entry in health_history %}
+                <div class="timeline-entry">
+                    <div class="timeline-header">
+                        <span class="timeline-date">{{ entry.date.strftime('%B %d, %Y') }}</span>
+                        <span class="health-score">Score: {{ entry.health_score }}%</span>
+                    </div>
+                    <div class="metric-grid">
+                        <!-- BMI -->
+                        <div class="metric-item">
+                            <div class="metric-label">BMI</div>
+                            <div class="metric-value">
+                                {{ "%.1f"|format(entry.bmi) }}
+                                {% if entry.bmi_change %}
+                                <span class="metric-change {{ 'metric-improved' if entry.bmi_change < 0 else 'metric-declined' }}">
+                                    {{ "%.1f"|format(entry.bmi_change) }}
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- Other metrics -->
+                        <div class="metric-item">
+                            <div class="metric-label">Blood Pressure</div>
+                            <div class="metric-value">{{ entry.blood_pressure }}</div>
+                        </div>
+                        <!-- Add other metrics similarly -->
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Improvement Chart
+        const ctx = document.getElementById('improvementChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ dates|tojson|safe }},
+                datasets: [{
+                    label: 'Health Score',
+                    data: {{ health_scores|tojson|safe }},
+                    borderColor: '#28a745',
+                    tension: 0.4,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
